@@ -1,3 +1,5 @@
-public interface Statement {
+public interface Statement<T> {
     
+    void metodo(Statement statement, T entity);
+
 }
