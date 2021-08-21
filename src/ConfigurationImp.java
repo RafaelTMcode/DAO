@@ -1,10 +1,9 @@
 public class ConfigurationImp implements Configuration{
     
-    private static ConfigurationImp configuration = null;
-    private ConfigurationImp(){
-    }
+    private static Configuration configuration = null;
 
-    public static ConfigurationImp getConfiguration(){
+
+    public static Configuration getConfiguration(){
       if(configuration==null){
           configuration = new ConfigurationImp();
       }
@@ -13,20 +12,17 @@ public class ConfigurationImp implements Configuration{
 
     @Override
     public String getUser() {
-        // TODO Auto-generated method stub
-        return null;
+        return System.getenv("DATABASE_USER");
     }
 
     @Override
     public String getPassWord() {
-        // TODO Auto-generated method stub
-        return null;
+        return System.getenv("DATABASE_PASS");
     }
 
     @Override
     public String getUrl() {
-        // TODO Auto-generated method stub
-        return null;
+        return System.getenv("DATABASE_URL");
     }
 
 
