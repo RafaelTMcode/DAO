@@ -1,5 +1,9 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class EntityManagerImp implements EntityManager{
 
+    private List<Runables> runables = new ArrayList<Runables>();
     private Configuration configuration = null;
 
     
