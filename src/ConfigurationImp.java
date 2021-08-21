@@ -16,7 +16,7 @@ public class ConfigurationImp implements Configuration{
     }
 
     @Override
-    public String getPassWord() {
+    public String getPassword() {
         return System.getenv("DATABASE_PASS");
     }
 

@@ -1,13 +1,15 @@
+import java.util.UUID;
+
 public class Ingredient {
 
-
+    private UUID id;
     private String name;
     private double price;
     
     public Ingredient(){
     }
 
-    public Ingredient(String name, double prize){
+    public Ingredient(UUID id, String name, double prize){
         this.name = name;
         this.price = prize;
     }
@@ -26,5 +28,13 @@ public class Ingredient {
 
     public void setPrice(double prize){
         this.price = prize;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 }
