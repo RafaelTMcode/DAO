@@ -2,8 +2,7 @@ public class App {
 
     //Configuration.getConfiguration()
 
-    /*
-    EntityManager.builConnection(Config.getConfiguration())
+    EntityManager.buildConnection(Configuration.getConfiguration())
     .addStatement<Pizza>(T entiy,sql,(statement,T entity)->{
        statement.setInt(entity.id)
              })
@@ -11,5 +10,5 @@ public class App {
 
      })
     .save();
-     */
+     
 }
