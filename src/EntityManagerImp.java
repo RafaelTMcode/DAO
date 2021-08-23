@@ -1,9 +1,12 @@
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class EntityManagerImp implements EntityManager{
 
@@ -74,6 +77,52 @@ public class EntityManagerImp implements EntityManager{
             }
         }
         
+    }
+
+    @Override
+    public <T> Optional<T> select(Class<T> clazz, Resultset<T> resultset) {
+        
+        
+        Connection connection = null;
+
+        try{
+            connection = DriverManager.getConnection(
+                this.configuration.getUrl(),
+                this.configuration.getUser(),
+                this.configuration.getPassword()
+            );
+
+
+
+        
+                Runables runable = runables.get(0);
+                PreparedStatement statement = connection.prepareStatement(runable.getSQL());
+                runable.run(statement);
+                ResultSet resultSet = statement.executeQuery();
+            
+            T entity = clazz.getConstructor().newInstance();
+            resultset.run(resultSet, entity);
+            return Optional.of(entity);
+
+        }catch(SQLException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+        }finally{
+
+            runables.clear();
+            try {
+                if(!(connection.isClosed())){
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
 
