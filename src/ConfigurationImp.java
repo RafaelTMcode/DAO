@@ -12,17 +12,17 @@ public class ConfigurationImp implements Configuration{
 
     @Override
     public String getUser() {
-        return System.getenv("DATABASE_USER");
+        return System.getenv("DB_USER");
     }
 
     @Override
     public String getPassword() {
-        return System.getenv("DATABASE_PASS");
+        return System.getenv("DB_PASS");
     }
 
     @Override
     public String getUrl() {
-        return System.getenv("DATABASE_URL");
+        return System.getenv("DB_URL");
     }
 
 
