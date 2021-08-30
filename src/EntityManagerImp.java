@@ -13,7 +13,6 @@ public class EntityManagerImp implements EntityManager{
     private List<Runables> runables = new ArrayList<Runables>();
     private Configuration configuration = null;
 
-    
     public EntityManagerImp(Configuration configuration){
         this.configuration = configuration;
     }
@@ -22,8 +21,6 @@ public class EntityManagerImp implements EntityManager{
         return new EntityManagerImp(configuration);
     }
 
-
-
     @Override
     public <T> EntityManager addStatement(T entity, String sql, Statement<T> statement) {
         Runables runable = new RunablesImp<T>(sql, entity, statement);
@@ -31,15 +28,54 @@ public class EntityManagerImp implements EntityManager{
         return this;
     }
 
+
+
     @Override
-    public <T> EntityManager addRangeStatemment(Iterable<T> iterable, String sql, Statement<T> statement) {
-        // TODO Auto-generated method stub
-        return null;
+    public <T> Optional<T> select(Class<T> clazz, Resultset<T> resultset) {
+        
+        Connection connection = null;
+        T entity = null;
+
+        try{
+            connection = DriverManager.getConnection(
+                this.configuration.getUrl(),
+                this.configuration.getUser(),
+                this.configuration.getPassword()
+            );
+ 
+            Runables runable = this.runables.get(0);
+
+            PreparedStatement statement = connection.prepareStatement(runable.getSQL());
+            runable.run(statement);
+
+            ResultSet resultSetSQL = statement.executeQuery();
+
+            while(resultSetSQL.next()){
+
+                entity = clazz.getConstructor().newInstance();
+                resultset.run(resultSetSQL, entity);
+            }
+
+        }catch(SQLException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
+            e.printStackTrace();
+        }finally{
+
+            this.runables.clear();
+            try {
+                if(!connection.isClosed()){
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return Optional.of(entity);
     }
 
     @Override
     public void save() {
-        
+
         Connection connection = null;
 
         try{
@@ -67,65 +103,23 @@ public class EntityManagerImp implements EntityManager{
             e.printStackTrace();
         }finally{
 
-            runables.clear();
+            this.runables.clear();
             try {
-                if(!(connection.isClosed())){
+                if(!connection.isClosed()){
                     connection.close();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        
     }
 
     @Override
-    public <T> Optional<T> select(Class<T> clazz, Resultset<T> resultset) {
-        
-        
-        Connection connection = null;
-
-        try{
-            connection = DriverManager.getConnection(
-                this.configuration.getUrl(),
-                this.configuration.getUser(),
-                this.configuration.getPassword()
-            );
-
-
-
-        
-                Runables runable = runables.get(0);
-                PreparedStatement statement = connection.prepareStatement(runable.getSQL());
-                runable.run(statement);
-                ResultSet resultSet = statement.executeQuery();
-            
-            T entity = clazz.getConstructor().newInstance();
-            resultset.run(resultSet, entity);
-            return Optional.of(entity);
-
-        }catch(SQLException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
-            try {
-                connection.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
-            e.printStackTrace();
-        }finally{
-
-            runables.clear();
-            try {
-                if(!(connection.isClosed())){
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+    public <T> EntityManager addRangeStatemment(Iterable<T> iterable, String sql, Statement<T> statement) {
+        for(T entity : iterable){
+            Runables runable = new RunablesImp<T>(sql, entity, statement);
+            this.runables.add(runable);
         }
-        return null;
-    }
-
-
-
-    
+        return this;
+    }  
 }
