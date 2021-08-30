@@ -1,8 +1,7 @@
 import java.util.UUID;
 
-public class Ingredient {
+public class Ingredient extends Entity{
 
-    private UUID id;
     private String name;
     private double price;
     
@@ -30,11 +29,4 @@ public class Ingredient {
         this.price = prize;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 }
