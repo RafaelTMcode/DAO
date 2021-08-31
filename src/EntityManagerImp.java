@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class EntityManagerImp implements EntityManager{
-
+public class EntityManagerImp implements EntityManager{    
+    
     private List<Runables> runables = new ArrayList<Runables>();
     private Configuration configuration = null;
 
@@ -28,7 +28,15 @@ public class EntityManagerImp implements EntityManager{
         return this;
     }
 
-
+    @Override
+    public <T> EntityManager addRangeStatement(Iterable<T> iterable, String sql, Statement<T> statement) {
+        
+        for(T entity : iterable){
+            Runables runable = new RunablesImp<T>(sql, entity, statement);
+            this.runables.add(runable);
+        }
+        return this;
+    }
 
     @Override
     public <T> Optional<T> select(Class<T> clazz, Resultset<T> resultset) {
@@ -112,14 +120,5 @@ public class EntityManagerImp implements EntityManager{
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public <T> EntityManager addRangeStatemment(Iterable<T> iterable, String sql, Statement<T> statement) {
-        for(T entity : iterable){
-            Runables runable = new RunablesImp<T>(sql, entity, statement);
-            this.runables.add(runable);
-        }
-        return this;
     }  
 }

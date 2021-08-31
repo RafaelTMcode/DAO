@@ -1,16 +1,14 @@
-import java.util.UUID;
-
 public class Ingredient extends Entity{
 
     private String name;
     private double price;
-    
+
     public Ingredient(){
     }
 
-    public Ingredient(UUID id, String name, double prize){
+    public Ingredient(String name, double price){
         this.name = name;
-        this.price = prize;
+        this.price = price;
     }
 
     public String getName(){
@@ -25,8 +23,7 @@ public class Ingredient extends Entity{
         this.name = name;
     }
 
-    public void setPrice(double prize){
-        this.price = prize;
+    public void setPrice(double price){
+        this.price = price;
     }
-
 }

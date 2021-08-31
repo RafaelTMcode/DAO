@@ -13,7 +13,7 @@ public class App {
 
     EntityManagerImp.buildConnection(ConfigurationImp.getConfiguration())
         .addStatement(ingredient, "INSERT INTO ingredient(id, name, price) VALUES(?, ?, ?)", (statement, entity) ->{
-            statement.setInt(1, 4444);
+            statement.setBytes(1, Converter.fromUUIDtoByteArray(entity.getId()));
             statement.setString(2, entity.getName());
             statement.setDouble(3, entity.getPrice());
         })
@@ -24,7 +24,7 @@ public class App {
         
         Ingredient ingredient1 = EntityManagerImp.buildConnection(ConfigurationImp.getConfiguration())
                                                  .addStatement(ingredient, "SELECT id, name, price FROM ingredient WHERE id=?", (statement, entity) -> {
-                                                    statement.setInt(1, 4444);
+                                                    statement.setBytes(1, Converter.fromUUIDtoByteArray(ingredientID));
                                                  })
                                                  .select(Ingredient.class, (resultSet, entity) -> {
                                                     entity.setId(ingredientID);
